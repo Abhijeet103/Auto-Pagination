@@ -49,12 +49,12 @@ public class PaginationAspect {
         });
         try {
 
-            List<?> list = ((RestResponse<?>) result).getSubjectList();
+            List<?> list = ((List<?>) result) ;
             System.out.println(list.size());
             int start = (int) pageable.getOffset();
             int end = Math.min((start + pageable.getPageSize()), list.size());
             List<?> subList = list.subList(start, end);
-            return new RestResponse(new PageImpl<>(subList, pageable, list.size()).getContent());
+            return new PageImpl<>(subList, pageable, list.size()).getContent();
         }
         catch (Exception e)
         {
