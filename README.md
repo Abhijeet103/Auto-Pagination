@@ -1,0 +1,2 @@
+Auto Pagination Library
+Pagination of an API can be straightforward when using Spring Data. However, when dealing with protocols like LDAP or legacy systems lacking clear organization, pagination becomes challenging. This library simplifies the process, enhancing your workflow. It handles the pagination of your controller output, typically of type List<T>, and incorporates caching to improve performance.
