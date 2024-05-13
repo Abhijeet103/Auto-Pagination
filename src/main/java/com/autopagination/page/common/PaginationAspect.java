@@ -1,6 +1,7 @@
 package com.autopagination.page.common;
 
 import lombok.NoArgsConstructor;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -20,6 +21,8 @@ public class PaginationAspect {
     @Autowired
     PaginationCacheService cacheService ;
     private static final String CACHE_NAME = "paginationCache";
+
+    JoinPoint  prev =  null;
     @Around("@annotation(org.springframework.web.bind.annotation.GetMapping)")
     public Object paginate(ProceedingJoinPoint joinPoint) throws Throwable {
         // Find the Pageable argument
@@ -37,16 +40,20 @@ public class PaginationAspect {
             return joinPoint.proceed();
         }
 
-        // Execute the method and get the result
-//        Object result = joinPoint.proceed();
 
         Object result  = cacheService.retrieveData(joinPoint.getSignature().toString(), () -> {
             try {
+                if(!joinPoint.equals(prev))
+                {
+                    cacheService.clearCache();
+                }
                 return joinPoint.proceed();
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             }
         });
+
+        prev =  joinPoint;
         try {
 
             List<?> list = ((List<?>) result) ;
